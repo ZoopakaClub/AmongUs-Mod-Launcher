@@ -1,0 +1,34 @@
+[
+    {
+        "title": "Super\nNewRoles",
+        "prefix": "snr",
+        "image": "",
+        "release": "https://api.github.com/repos/SuperNewRoles/SuperNewRoles/releases",
+        "regex": "^SuperNewRoles-v.*\\.zip$",
+        "vanilla": false
+    },
+    {
+        "title": "Town Of Host",
+        "prefix": "toh",
+        "image": "",
+        "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
+        "regex": "^TownOfHost-.*\\.zip$",
+        "vanilla": false
+    },
+    {
+        "title": "ExtremeRoles",
+        "prefix": "exr",
+        "image": "",
+        "release": "https://api.github.com/repos/yukieiji/ExtremeRoles/releases",
+        "regex": "^ExtremeRoles-v.*\\.with\\.Extreme\\.Skins\\.zip$",
+        "vanilla": false
+    },
+    {
+        "title": "Nebula \non the Ship",
+        "prefix": "nos",
+        "image": "",
+        "release": "https://api.github.com/repos/Dolly1016/Nebula/releases",
+        "regex": "^Nebula\\.zip$",
+        "vanilla": false
+    }
+]

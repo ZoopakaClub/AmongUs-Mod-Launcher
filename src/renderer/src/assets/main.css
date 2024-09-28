@@ -1,0 +1,97 @@
+html, body, div#root {
+  width: 100%;
+  height: 100%;
+  background-color: #2c2c2c;
+  color: #FAFAFA;
+}
+
+div#container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+section#menu {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 46px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  z-index: 10;
+  background-color: #212121;
+  -webkit-app-region: drag;
+  padding: 0.5rem;
+}
+
+section#menu .list {
+
+}
+
+section#menu .title {
+
+}
+
+section#menu .buttons {
+  -webkit-user-select: none;
+  -webkit-app-region: no-drag;
+}
+
+section#launcher {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+#footer {
+  display: flex;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+#footer #platform-select {
+  padding: 12px;
+}
+
+#footer #folder-select {
+  display: flex;
+  width: 100%;
+  height: 48px;
+  gap: 4px;
+  flex-grow: 1;
+}
+
+#footer #folder-select > div {
+  width: 100%;
+}
+
+#footer #folder-button {
+  flex-grow: 1;
+  flex-shrink: 0;
+  width: 100%;
+  height: 48px;
+}
+
+#footer #folder-button {
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 64px;
+  height: 48px;
+}
+
+::-webkit-scrollbar {
+  background: transparent;
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(250, 250, 250, 0.15);
+}
