@@ -1,7 +1,7 @@
 import { ipcMain, shell } from 'electron'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import { exec } from 'child_process';
+import { exec } from 'child_process'
 
 import axios from 'axios'
 import AdmZip from 'adm-zip'
@@ -24,7 +24,11 @@ const vanillaFiles = [
   'handler'
 ]
 
-const isZipSameVersion = async (dir: string, prefex: string, tag_condition: string): Promise<boolean> => {
+const isZipSameVersion = async (
+  dir: string,
+  prefex: string,
+  tag_condition: string
+): Promise<boolean> => {
   try {
     const workdir = path.join(dir, 'handler')
     const versionFile = path.join(workdir, prefex + '.json')
@@ -81,15 +85,26 @@ const deleteModData = async (dir: string): Promise<boolean> => {
   }
 }
 
+const deleteHandlerData = async (dir: string): Promise<boolean> => {
+  try {
+    const handler = path.join(dir, 'handler')
+    fs.rmSync(handler, { recursive: true, force: true })
+    return true
+  } catch (e) {
+    console.error(e)
+    return false
+  }
+}
+
 const isApplicationRunning = (appName: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     exec('tasklist', (err, stdout, _) => {
       if (err) {
-        return reject(err);
+        return reject(err)
       }
-      resolve(stdout.toLowerCase().indexOf(appName.toLowerCase()) > -1);
-    });
-  });
+      resolve(stdout.toLowerCase().indexOf(appName.toLowerCase()) > -1)
+    })
+  })
 }
 
 export const fileHandler = (): void => {
@@ -175,12 +190,12 @@ export const fileHandler = (): void => {
             if (response_zip.status !== 200) throw 'NETWORK ERROR'
             const zipPath = path.join(workdir, dirName + '.zip')
             await fs.promises.writeFile(zipPath, Buffer.from(response_zip.data), 'binary')
-            
+
             const versionData = { version: tag_name }
             const versionStr = JSON.stringify(versionData)
             const jsonPath = path.join(workdir, dirName + '.json')
             await fs.promises.writeFile(jsonPath, versionStr)
-  
+
             return true
           }
         }
@@ -196,7 +211,7 @@ export const fileHandler = (): void => {
   ipcMain.handle(Messages.EXTRACT_MOD, async (_, mod: ModSchema, dir: string): Promise<boolean> => {
     try {
       const isSameMod = await isCurrentModSame(dir, mod.prefix)
-      
+
       if (!isSameMod) {
         await deleteModData(dir)
       }
@@ -256,25 +271,34 @@ export const fileHandler = (): void => {
     return deleteModData(dir)
   })
 
-  ipcMain.handle(Messages.LAUNCH_GAME, async (_, dir: string, platform: GamePlatform): Promise<boolean> => {
-    try {
-      const GamePlatform = DefaultGamePlatforms[platform]
-      switch (GamePlatform.launchType) {
-        case PlatformRunType.URI:
-          shell.openExternal(GamePlatform.runPath);
-          break;
-        case PlatformRunType.EXE:
-          shell.openExternal(path.join(dir, GamePlatform.execute));
-          break;
+  ipcMain.handle(
+    Messages.LAUNCH_GAME,
+    async (_, dir: string, platform: GamePlatform): Promise<boolean> => {
+      try {
+        const GamePlatform = DefaultGamePlatforms[platform]
+        switch (GamePlatform.launchType) {
+          case PlatformRunType.URI:
+            shell.openExternal(GamePlatform.runPath)
+            break
+          case PlatformRunType.EXE:
+            shell.openExternal(path.join(dir, GamePlatform.execute))
+            break
+        }
+        return true
+      } catch (e) {
+        console.error(e)
+        return false
       }
-      return true
-    } catch (e) {
-      console.error(e)
-      return false
     }
-  })
+  )
 
   ipcMain.handle(Messages.IS_RUNNING_GAME, async (): Promise<boolean> => {
     return isApplicationRunning('Among Us.exe')
+  })
+
+  ipcMain.handle(Messages.RESET_MODS, async (_, dir: string): Promise<boolean> => {
+    await deleteModData(dir)
+    await deleteHandlerData(dir)
+    return true
   })
 }

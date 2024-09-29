@@ -29,8 +29,9 @@ section#menu {
   padding: 0.5rem;
 }
 
-section#menu .list {
-
+section#menu .resetbutton {
+  -webkit-user-select: none;
+  -webkit-app-region: no-drag;
 }
 
 section#menu .title {

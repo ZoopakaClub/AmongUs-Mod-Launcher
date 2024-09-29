@@ -42,6 +42,8 @@ const ALERT_MESSAGES = {
     '既にModが導入されています。\nAmongUsの再インストールを行うか、Modデータを全て削除してください'
 }
 
+const amlVersion: string = '1.0'
+
 function App(): JSX.Element {
   const [isModList, setModList] = useState<boolean>(false)
   const [modListData, setModListData] = useState<ModSchema[]>([])
@@ -105,6 +107,8 @@ function App(): JSX.Element {
 
   const isRunningGame = (): Promise<boolean> =>
     window.electron.ipcRenderer.invoke(Messages.IS_RUNNING_GAME)
+
+  const resetMods = (location: string): Promise<boolean> => window.electron.ipcRenderer.invoke(Messages.RESET_MODS, location)
 
   useEffect(() => {
     if (!isModList) {
@@ -217,6 +221,25 @@ function App(): JSX.Element {
     }
   }
 
+  const resetModsHandler = async (): Promise<void> => {
+    if (!currentPlatformPath) {
+      handleOpenErrorModal(MultiLineBody(ALERT_MESSAGES.NO_GAME_FILE))
+      return
+    }
+    const isRunning = await isRunningGame()
+    if (isRunning) {
+      handleOpenErrorModal(MultiLineBody(ALERT_MESSAGES.ALREADY_RUNNING_GAME))
+      return
+    }
+    setPropgressModalTitle('Modデータを削除')
+    setPropgressModalMessage('削除中...')
+    setOpenProgressModal(true)
+    await resetMods(currentPlatformPath)
+    setTimeout(() => {
+      setOpenProgressModal(false)
+    }, 5000)
+  }
+
   /** Elements */
   const BasicErrorModal = (): JSX.Element => {
     return (
@@ -293,8 +316,10 @@ function App(): JSX.Element {
     <>
       <div id="container">
         <section id="menu">
-          <div className="list"></div>
-          <div className="title">AmongUs Mod Launcher</div>
+          <div className="resetbutton">
+            <Button onClick={resetModsHandler}>Mod削除</Button>
+          </div>
+          <div className="title">AmongUs Mod Launcher v{amlVersion}</div>
           <div className="buttons">
             <IconButton
               aria-label="minimize"
