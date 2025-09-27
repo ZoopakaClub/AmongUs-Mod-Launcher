@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import pk from '../../../package.json'
 import { GamePlatform, GamePlatformMap } from '../../common/GamePlatform'
+import { Close, Minimize } from '@mui/icons-material'
 import {
   IconButton,
   Button,
@@ -21,7 +22,6 @@ import {
   CardContent,
   LinearProgress
 } from '@mui/material'
-import { Close, Minimize } from '@mui/icons-material'
 
 const BasicModalStyle = {
   position: 'absolute' as const,
@@ -41,10 +41,11 @@ const ALERT_MESSAGES = {
   MOD_INSTALLED:
     '既にModが導入されています。\nAmongUsの再インストールを行うか、Modデータを全て削除してください'
 }
+console.log(pk.version)
 
 const amlVersion: string = pk.version
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   const [isModList, setModList] = useState<boolean>(false)
   const [modListData, setModListData] = useState<ModSchema[]>([])
   const [isGamePlatform, setGamePlatform] = useState<boolean>(false)
@@ -52,10 +53,10 @@ function App(): JSX.Element {
   const [currentPlatformPath, setCurrentPlatformPath] = useState<string>('')
   const [currentPlatformPathDisable, setCurrentPlatformPathDisable] = useState<boolean>(false)
 
-  const [platformSelect, setPlatformSelect] = useState<JSX.Element[]>([])
+  const [platformSelect, setPlatformSelect] = useState<React.JSX.Element[]>([])
 
   const [openErrorModal, setOpenErrorModal] = useState(false)
-  const [basicModalMessage, setBasicModalMessage] = useState<JSX.Element>()
+  const [basicModalMessage, setBasicModalMessage] = useState<React.JSX.Element>()
 
   const [openProgressModal, setOpenProgressModal] = useState<boolean>(false)
   const [propgressModalTitle, setPropgressModalTitle] = useState<string>('')
@@ -68,7 +69,7 @@ function App(): JSX.Element {
   })
   const [currentModPlatform, setCurrentModPlatform] = useState<GamePlatform>(GamePlatform.STEAM)
 
-  const handleOpenErrorModal = (msg: JSX.Element): void => {
+  const handleOpenErrorModal = (msg: React.JSX.Element): void => {
     setBasicModalMessage(msg)
     setOpenErrorModal(true)
   }
@@ -90,7 +91,7 @@ function App(): JSX.Element {
     })
   }
 
-  const MultiLineBody = (body: string): JSX.Element => {
+  const MultiLineBody = (body: string): React.JSX.Element => {
     const texts = body.split('\n').map((item, index) => {
       return (
         <Fragment key={index}>
@@ -152,7 +153,7 @@ function App(): JSX.Element {
       setCurrentPlatform(GamePlatform.CUSTOM)
       setCurrentPlatformPathDisable(false)
       getGamePlatform().then(async (d: GamePlatformMap) => {
-        const platforms: JSX.Element[] = []
+        const platforms: React.JSX.Element[] = []
         for (const key in d) {
           const k = d[key]
           platforms.push(
@@ -290,7 +291,7 @@ function App(): JSX.Element {
   }
 
   /** Elements */
-  const BasicErrorModal = (): JSX.Element => {
+  const BasicErrorModal = (): React.JSX.Element => {
     return (
       <Modal
         aria-labelledby="transition-modal-title"
@@ -324,7 +325,7 @@ function App(): JSX.Element {
   const handleCurrentModPlatformChange = (event: SelectChangeEvent): void => {
     setCurrentModPlatform(event.target.value as GamePlatform)
   }
-  const BasicModPlatformModal = (): JSX.Element => {
+  const BasicModPlatformModal = (): React.JSX.Element => {
     return (
       <Modal
         aria-labelledby="transition-modal-title"
@@ -379,7 +380,7 @@ function App(): JSX.Element {
     showProgress: boolean
   }
 
-  const ProcessView = (props: ProcessViewProps): JSX.Element => {
+  const ProcessView = (props: ProcessViewProps): React.JSX.Element => {
     const card = (
       <Fragment>
         <CardContent>
