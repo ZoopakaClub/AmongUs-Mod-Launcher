@@ -1,34 +1,74 @@
 [
-    {
-        "title": "Super\nNewRoles",
-        "prefix": "snr",
-        "image": "",
+  {
+    "title": "Super\nNewRoles",
+    "prefix": "snr",
+    "image": "",
+    "platform": {
+      "steam": {
         "release": "https://api.github.com/repos/SuperNewRoles/SuperNewRoles/releases",
-        "regex": "^SuperNewRoles-v.*\\.zip$",
-        "vanilla": false
+        "regex": "^SuperNewRoles-v.*_Steam\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/SuperNewRoles/SuperNewRoles/releases",
+        "regex": "^SuperNewRoles-v.*_Epic\\.zip$"
+      }
     },
-    {
-        "title": "Town Of Host",
-        "prefix": "toh",
-        "image": "",
+    "release": "https://api.github.com/repos/SuperNewRoles/SuperNewRoles/releases",
+    "regex": "^SuperNewRoles-v.*\\.zip$",
+    "vanilla": false
+  },
+  {
+    "title": "Town Of Host",
+    "prefix": "toh",
+    "image": "",
+    "platform": {
+      "steam": {
         "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
-        "regex": "^TownOfHost-.*\\.zip$",
-        "vanilla": false
+        "regex": "^TownOfHost-.*_Steam\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
+        "regex": "^TownOfHost-.*_Epic\\.zip$"
+      }
     },
-    {
-        "title": "ExtremeRoles",
-        "prefix": "exr",
-        "image": "",
+    "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
+    "regex": "^TownOfHost-.*\\.zip$",
+    "vanilla": false
+  },
+  {
+    "title": "ExtremeRoles",
+    "prefix": "exr",
+    "image": "",
+    "platform": {
+      "steam": {
         "release": "https://api.github.com/repos/yukieiji/ExtremeRoles/releases",
-        "regex": "^ExtremeRoles-v.*\\.with\\.Extreme\\.Skins\\.zip$",
-        "vanilla": false
+        "regex": "^STEAM_ONLY_ExtremeRoles-v.*\\.with\\.Extreme\\.Skins\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/yukieiji/ExtremeRoles/releases",
+        "regex": "^ExtremeRoles-v.*\\.with\\.Extreme\\.Skins\\.zip$"
+      }
     },
-    {
-        "title": "Nebula \non the Ship",
-        "prefix": "nos",
-        "image": "",
+    "release": "https://api.github.com/repos/yukieiji/ExtremeRoles/releases",
+    "regex": "^ExtremeRoles-v.*\\.with\\.Extreme\\.Skins\\.zip$",
+    "vanilla": false
+  },
+  {
+    "title": "Nebula \non the Ship",
+    "prefix": "nos",
+    "image": "",
+    "platform": {
+      "steam": {
         "release": "https://api.github.com/repos/Dolly1016/Nebula/releases",
-        "regex": "^Nebula\\.zip$",
-        "vanilla": false
-    }
+        "regex": "^Nebula\\_Steam\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/Dolly1016/Nebula/releases",
+        "regex": "^Nebula\\_Epic\\.zip$"
+      }
+    },
+    "release": "https://api.github.com/repos/Dolly1016/Nebula/releases",
+    "regex": "^Nebula\\.zip$",
+    "vanilla": false
+  }
 ]
