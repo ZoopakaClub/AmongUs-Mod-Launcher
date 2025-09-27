@@ -155,17 +155,37 @@ export const fileHandler = (): void => {
 
   ipcMain.handle(
     Messages.DOWNLOAD_MOD,
-    async (_, mod: ModSchema, dir: string): Promise<boolean> => {
+    async (_, mod: ModSchema, dir: string, platform: string): Promise<boolean> => {
       try {
         // create handler directory
         const workdir = path.join(dir, 'handler')
         const isHandler = await fs.existsSync(workdir)
         if (!isHandler) await fs.mkdir(workdir)
 
+        let mod_release = mod.release
+        let mod_regex = mod.regex
+        if (mod.platform) {
+          if (platform == GamePlatform.EPIC) {
+            mod_release = mod.platform.epic.release
+            mod_regex = mod.platform.epic.regex
+          } else {
+            mod_release = mod.platform.steam.release
+            mod_regex = mod.platform.steam.regex
+          }
+        }
+
+        console.log({
+          prefix: mod.prefix,
+          platform: mod.platform,
+          target: platform,
+          release: mod_release,
+          regex: mod_regex
+        })
+
         const dirName = mod.prefix
-        const response_release = await axios.get(mod.release)
+        const response_release = await axios.get(mod_release)
         if (response_release.status !== 200) throw 'NETWORK ERROR'
-        const regex = new RegExp(mod.regex)
+        const regex = new RegExp(mod_regex)
 
         let download_target: null | ReleaseAsset = null
         let tag_name: string = ''

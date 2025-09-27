@@ -1,13 +1,14 @@
 import { Messages } from '../../common/Messages'
-import { ModSchema } from '../../common/ModSchema'
+import { ModPlatformModal, ModSchema, ReleasePlatform } from '../../common/ModSchema'
 import { useEffect, useState, Fragment } from 'react'
 
 import LaunchList from './components/LaunchList'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
-
+import pk from '../../../package.json'
 import { GamePlatform, GamePlatformMap } from '../../common/GamePlatform'
+import { Close, Minimize } from '@mui/icons-material'
 import {
   IconButton,
   Button,
@@ -21,7 +22,6 @@ import {
   CardContent,
   LinearProgress
 } from '@mui/material'
-import { Close, Minimize } from '@mui/icons-material'
 
 const BasicModalStyle = {
   position: 'absolute' as const,
@@ -41,10 +41,11 @@ const ALERT_MESSAGES = {
   MOD_INSTALLED:
     '既にModが導入されています。\nAmongUsの再インストールを行うか、Modデータを全て削除してください'
 }
+console.log(pk.version)
 
-const amlVersion: string = '1.0'
+const amlVersion: string = pk.version
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   const [isModList, setModList] = useState<boolean>(false)
   const [modListData, setModListData] = useState<ModSchema[]>([])
   const [isGamePlatform, setGamePlatform] = useState<boolean>(false)
@@ -52,23 +53,45 @@ function App(): JSX.Element {
   const [currentPlatformPath, setCurrentPlatformPath] = useState<string>('')
   const [currentPlatformPathDisable, setCurrentPlatformPathDisable] = useState<boolean>(false)
 
-  const [platformSelect, setPlatformSelect] = useState<JSX.Element[]>([])
+  const [platformSelect, setPlatformSelect] = useState<React.JSX.Element[]>([])
 
   const [openErrorModal, setOpenErrorModal] = useState(false)
-  const [basicModalMessage, setBasicModalMessage] = useState<JSX.Element>()
+  const [basicModalMessage, setBasicModalMessage] = useState<React.JSX.Element>()
 
   const [openProgressModal, setOpenProgressModal] = useState<boolean>(false)
   const [propgressModalTitle, setPropgressModalTitle] = useState<string>('')
   const [propgressModalMessage, setPropgressModalMessage] = useState<string>('')
   const [propgressModalBar] = useState<boolean>(true)
 
-  const handleOpenErrorModal = (msg: JSX.Element): void => {
+  const [openModPlatformModal, setOpenModPlatformModal] = useState<ModPlatformModal>({
+    state: false,
+    targetMod: null
+  })
+  const [currentModPlatform, setCurrentModPlatform] = useState<GamePlatform>(GamePlatform.STEAM)
+
+  const handleOpenErrorModal = (msg: React.JSX.Element): void => {
     setBasicModalMessage(msg)
     setOpenErrorModal(true)
   }
   const handleCloseErrorModal = (): void => setOpenErrorModal(false)
 
-  const MultiLineBody = (body: string): JSX.Element => {
+  const handleCloseModPlatformModal = (): void => {
+    setCurrentModPlatform(GamePlatform.STEAM)
+    setOpenModPlatformModal({
+      state: false,
+      targetMod: null
+    })
+  }
+
+  const handleApproveModPlatformModal = (): void => {
+    launchWithMod(openModPlatformModal.targetMod, currentModPlatform)
+    setOpenModPlatformModal({
+      state: false,
+      targetMod: null
+    })
+  }
+
+  const MultiLineBody = (body: string): React.JSX.Element => {
     const texts = body.split('\n').map((item, index) => {
       return (
         <Fragment key={index}>
@@ -93,8 +116,12 @@ function App(): JSX.Element {
   const isInstalledVanilla = (location: string): Promise<boolean> =>
     window.electron.ipcRenderer.invoke(Messages.IS_VANILLA, location)
 
-  const downloadMod = (mod: ModSchema, location: string): Promise<boolean> =>
-    window.electron.ipcRenderer.invoke(Messages.DOWNLOAD_MOD, mod, location)
+  const downloadMod = (
+    mod: ModSchema,
+    location: string,
+    modPlatform: GamePlatform
+  ): Promise<boolean> =>
+    window.electron.ipcRenderer.invoke(Messages.DOWNLOAD_MOD, mod, location, modPlatform)
 
   const extractMod = (mod: ModSchema, location: string): Promise<boolean> =>
     window.electron.ipcRenderer.invoke(Messages.EXTRACT_MOD, mod, location)
@@ -126,7 +153,7 @@ function App(): JSX.Element {
       setCurrentPlatform(GamePlatform.CUSTOM)
       setCurrentPlatformPathDisable(false)
       getGamePlatform().then(async (d: GamePlatformMap) => {
-        const platforms: JSX.Element[] = []
+        const platforms: React.JSX.Element[] = []
         for (const key in d) {
           const k = d[key]
           platforms.push(
@@ -184,6 +211,30 @@ function App(): JSX.Element {
     })
   }
 
+  const hasSchemaPlatform = (mod: ModSchema): boolean => {
+    if (mod.platform) {
+      const platform: ReleasePlatform = mod.platform
+      if ('epic' in platform && 'steam' in platform) return true
+    }
+    return false
+  }
+
+  const launchWithMod = async (mod, modPlatform): Promise<void> => {
+    setPropgressModalTitle(mod.title)
+    setPropgressModalMessage('Modデータ取得中...')
+    setOpenProgressModal(true)
+    await downloadMod(mod, currentPlatformPath, modPlatform)
+    setPropgressModalMessage('Modデータ展開中...')
+    await extractMod(mod, currentPlatformPath)
+
+    setPropgressModalMessage('起動中...')
+    await launchGame(currentPlatformPath, currentPlatform)
+
+    setTimeout(() => {
+      setOpenProgressModal(false)
+    }, 10000)
+  }
+
   const launchHandler = async (mod: ModSchema): Promise<void> => {
     if (!currentPlatformPath) {
       handleOpenErrorModal(MultiLineBody(ALERT_MESSAGES.NO_GAME_FILE))
@@ -206,18 +257,17 @@ function App(): JSX.Element {
         setOpenProgressModal(false)
       }, 10000)
     } else {
-      setPropgressModalTitle(mod.title)
-      setPropgressModalMessage('Modデータ取得中...')
-      setOpenProgressModal(true)
-      await downloadMod(mod, currentPlatformPath)
-      setPropgressModalMessage('Modデータ展開中...')
-      await extractMod(mod, currentPlatformPath)
-
-      setPropgressModalMessage('起動中...')
-      await launchGame(currentPlatformPath, currentPlatform)
-      setTimeout(() => {
-        setOpenProgressModal(false)
-      }, 10000)
+      const targetMod: ModSchema = { ...mod }
+      if (hasSchemaPlatform(targetMod)) {
+        if (currentPlatform === GamePlatform.CUSTOM) {
+          setOpenModPlatformModal({
+            state: true,
+            targetMod: targetMod
+          })
+          return
+        }
+      }
+      launchWithMod(targetMod, currentPlatform)
     }
   }
 
@@ -241,7 +291,7 @@ function App(): JSX.Element {
   }
 
   /** Elements */
-  const BasicErrorModal = (): JSX.Element => {
+  const BasicErrorModal = (): React.JSX.Element => {
     return (
       <Modal
         aria-labelledby="transition-modal-title"
@@ -272,6 +322,57 @@ function App(): JSX.Element {
       </Modal>
     )
   }
+  const handleCurrentModPlatformChange = (event: SelectChangeEvent): void => {
+    setCurrentModPlatform(event.target.value as GamePlatform)
+  }
+  const BasicModPlatformModal = (): React.JSX.Element => {
+    return (
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openModPlatformModal.state}
+        onClose={handleCloseModPlatformModal}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500
+          }
+        }}
+      >
+        <Fade in={openModPlatformModal.state}>
+          <Box sx={BasicModalStyle}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              プラットフォームの選択
+            </Typography>
+            <div style={{ fontSize: '0.75em', marginBottom: '1em' }}>
+              このModの導入にはプラットフォームの指定が必須です。
+            </div>
+            <div>
+              <Select
+                id="platform-select-mod"
+                displayEmpty
+                inputProps={{ 'aria-label': 'Without label' }}
+                value={currentModPlatform}
+                onChange={handleCurrentModPlatformChange}
+              >
+                <MenuItem value={GamePlatform.STEAM}>{GamePlatform.STEAM}</MenuItem>
+                <MenuItem value={GamePlatform.EPIC}>{GamePlatform.EPIC}</MenuItem>
+              </Select>
+            </div>
+            <div style={{ textAlign: 'right', paddingTop: '1rem' }}>
+              <Button onClick={handleCloseModPlatformModal} color="error">
+                キャンセル
+              </Button>
+              <Button onClick={handleApproveModPlatformModal} color="success">
+                決定
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
+    )
+  }
 
   interface ProcessViewProps {
     title: string
@@ -279,7 +380,7 @@ function App(): JSX.Element {
     showProgress: boolean
   }
 
-  const ProcessView = (props: ProcessViewProps): JSX.Element => {
+  const ProcessView = (props: ProcessViewProps): React.JSX.Element => {
     const card = (
       <Fragment>
         <CardContent>
@@ -370,6 +471,7 @@ function App(): JSX.Element {
           </div>
         </section>
         <BasicErrorModal />
+        <BasicModPlatformModal />
         {openProgressModal && (
           <ProcessView
             title={propgressModalTitle}

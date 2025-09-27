@@ -52,6 +52,10 @@ section#launcher {
   flex-shrink: 1;
 }
 
+#platform-select-mod {
+  width: 100px;
+}
+
 #footer {
   display: flex;
   padding: 1rem;
