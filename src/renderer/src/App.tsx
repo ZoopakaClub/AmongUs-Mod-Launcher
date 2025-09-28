@@ -22,7 +22,7 @@ import {
   CardContent,
   LinearProgress
 } from '@mui/material'
-
+import { styled } from '@mui/material/styles'
 const BasicModalStyle = {
   position: 'absolute' as const,
   top: '50%',
@@ -41,9 +41,9 @@ const ALERT_MESSAGES = {
   MOD_INSTALLED:
     '既にModが導入されています。\nAmongUsの再インストールを行うか、Modデータを全て削除してください'
 }
-console.log(pk.version)
 
 const amlVersion: string = pk.version
+let once = true
 
 function App(): React.JSX.Element {
   const [isModList, setModList] = useState<boolean>(false)
@@ -59,9 +59,20 @@ function App(): React.JSX.Element {
   const [basicModalMessage, setBasicModalMessage] = useState<React.JSX.Element>()
 
   const [openProgressModal, setOpenProgressModal] = useState<boolean>(false)
-  const [propgressModalTitle, setPropgressModalTitle] = useState<string>('')
-  const [propgressModalMessage, setPropgressModalMessage] = useState<string>('')
-  const [propgressModalBar] = useState<boolean>(true)
+  const [progressModalTitle, setProgressModalTitle] = useState<string>('')
+  const [progressModalMessage, setProgressModalMessage] = useState<string>('')
+  const [progressModalBar] = useState<boolean>(true)
+
+  const [openUpdateModal, setUpdateModal] = useState<boolean>(false)
+  const [updateModalMessage, setUpdateModalMessage] = useState<string>('')
+  const [updateModalError, setUpdateModalError] = useState<string>('')
+  const [updateModalBar, setUpdateModalBar] = useState<boolean>(true)
+  const handleCloseUpdateModal = (): void => {
+    setUpdateModal(false)
+    setUpdateModalMessage('')
+    setUpdateModalError('')
+    setUpdateModalBar(true)
+  }
 
   const [openModPlatformModal, setOpenModPlatformModal] = useState<ModPlatformModal>({
     state: false,
@@ -171,6 +182,37 @@ function App(): React.JSX.Element {
       })
       setGamePlatform(true)
     }
+    if (once) {
+      window.api.onAutoUpdaterChecking((data) => {
+        if (data.state === 'checking') {
+          setUpdateModalMessage('確認中')
+          setUpdateModalBar(true)
+          setUpdateModal(true)
+        }
+      })
+      window.api.onAutoUpdaterAvailable((data) => {
+        if (data.state === 'available') {
+          setUpdateModalMessage('ダウンロード中：完了後に再起動')
+          setUpdateModalBar(true)
+          setUpdateModal(true)
+        }
+      })
+      window.api.onAutoUpdaterNotAvailable((data) => {
+        if (data.state === 'latest') {
+          handleCloseUpdateModal()
+        }
+      })
+      window.api.onAutoUpdaterError((data) => {
+        if (data.state === 'error') {
+          setUpdateModalMessage('アップデートに失敗しました')
+          setUpdateModalError(data.error?.message || '不明なエラー')
+          setUpdateModalBar(false)
+        }
+      })
+    }
+
+    once = false
+
   })
 
   /* Handlers */
@@ -220,14 +262,14 @@ function App(): React.JSX.Element {
   }
 
   const launchWithMod = async (mod, modPlatform): Promise<void> => {
-    setPropgressModalTitle(mod.title)
-    setPropgressModalMessage('Modデータ取得中...')
+    setProgressModalTitle(mod.title)
+    setProgressModalMessage('Modデータ取得中...')
     setOpenProgressModal(true)
     await downloadMod(mod, currentPlatformPath, modPlatform)
-    setPropgressModalMessage('Modデータ展開中...')
+    setProgressModalMessage('Modデータ展開中...')
     await extractMod(mod, currentPlatformPath)
 
-    setPropgressModalMessage('起動中...')
+    setProgressModalMessage('起動中...')
     await launchGame(currentPlatformPath, currentPlatform)
 
     setTimeout(() => {
@@ -246,12 +288,12 @@ function App(): React.JSX.Element {
       return
     }
     if (mod.vanilla) {
-      setPropgressModalTitle(mod.title)
-      setPropgressModalMessage('最適化中...')
+      setProgressModalTitle(mod.title)
+      setProgressModalMessage('最適化中...')
       setOpenProgressModal(true)
       await deleteMod(currentPlatformPath)
 
-      setPropgressModalMessage('起動中...')
+      setProgressModalMessage('起動中...')
       await launchGame(currentPlatformPath, currentPlatform)
       setTimeout(() => {
         setOpenProgressModal(false)
@@ -281,8 +323,8 @@ function App(): React.JSX.Element {
       handleOpenErrorModal(MultiLineBody(ALERT_MESSAGES.ALREADY_RUNNING_GAME))
       return
     }
-    setPropgressModalTitle('Modデータを削除')
-    setPropgressModalMessage('削除中...')
+    setProgressModalTitle('Modデータを削除')
+    setProgressModalMessage('削除中...')
     setOpenProgressModal(true)
     await resetMods(currentPlatformPath)
     setTimeout(() => {
@@ -413,6 +455,62 @@ function App(): React.JSX.Element {
     )
   }
 
+  interface UpdateViewProps {
+    title: string
+    message: string,
+    error: string,
+    showProgress: boolean
+  }
+  const ErrorDiv = styled('div')({
+    display: 'block',
+    width: '100%',
+    maxHeight: '200px',
+    overflowY: 'scroll',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    fontSize: '0.8rem',
+    padding: '0.8rem'
+  })
+  const UpdateView = (props: UpdateViewProps): React.JSX.Element => {
+    const card = (
+      <Fragment>
+        <CardContent>
+          <Typography variant="h5" component="div" align="center">
+            {props.title}
+          </Typography>
+          <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>{props.message}</Typography>
+          <ErrorDiv>{props.error}</ErrorDiv>
+          {props.showProgress && <LinearProgress color="primary" />}
+          {props.error && (
+            <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+              <Button onClick={handleCloseUpdateModal} color="success">
+                閉じる
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Fragment >
+    )
+
+    return (
+      <div
+        className="full"
+        style={{
+          position: 'fixed',
+          display: 'flex',
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0,0,0,0.8)',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Box sx={{ width: 350 }}>
+          <Card>{card}</Card>
+        </Box>
+      </div>
+    )
+  }
+
   return (
     <>
       <div id="container">
@@ -474,9 +572,17 @@ function App(): React.JSX.Element {
         <BasicModPlatformModal />
         {openProgressModal && (
           <ProcessView
-            title={propgressModalTitle}
-            message={propgressModalMessage}
-            showProgress={propgressModalBar}
+            title={progressModalTitle}
+            message={progressModalMessage}
+            showProgress={progressModalBar}
+          />
+        )}
+        {openUpdateModal && (
+          <UpdateView
+            title="アップデート確認中"
+            message={updateModalMessage}
+            error={updateModalError}
+            showProgress={updateModalBar}
           />
         )}
       </div>
