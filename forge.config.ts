@@ -11,6 +11,19 @@ import { resolve, join, dirname } from "path";
 import { copy, mkdirs } from 'fs-extra';
 
 const config: ForgeConfig = {
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'ZoopakaClub',
+          name: 'AmongUs-Mod-Launcher'
+        },
+        prerelease: false,
+        draft: true
+      }
+    }
+  ],
   packagerConfig: {
     name: 'AmongUs Mod Launcher',
     asar: true,
@@ -63,7 +76,6 @@ const config: ForgeConfig = {
   ],
   hooks: {
     async packageAfterCopy(_forgeConfig, buildPath) {
-      console.log('COPY START');
       const requiredNativePackages = ["registry-js"];
 
       const sourceNodeModulesPath = resolve(process.cwd(), "node_modules");
@@ -81,8 +93,6 @@ const config: ForgeConfig = {
           });
         })
       );
-      console.log('COPIED');
-      
     }
   },
 };

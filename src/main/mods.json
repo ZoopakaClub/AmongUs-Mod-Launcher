@@ -36,6 +36,24 @@
     "vanilla": false
   },
   {
+    "title": "Town Of Host K",
+    "prefix": "tohk",
+    "image": "",
+    "platform": {
+      "steam": {
+        "release": "https://api.github.com/repos/KYMario/TownOfHost-K/releases",
+        "regex": "^TownOfHost-K_steam\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/KYMario/TownOfHost-K/releases",
+        "regex": "^TownOfHost-K_epic\\.zip$"
+      }
+    },
+    "release": "https://api.github.com/repos/KYMario/TownOfHost-K/releases",
+    "regex": "^TownOfHost-K_steam\\.zip$",
+    "vanilla": false
+  },
+  {
     "title": "ExtremeRoles",
     "prefix": "exr",
     "image": "",
