@@ -5,10 +5,13 @@ import { modListHandler } from './main/modListHandler'
 import { gamePlatFormHandler } from './main/gamePlatFormHandler'
 import { dialogHandler } from './main/dialogHandler'
 import { fileHandler } from './main/FileHandler'
+import { updateElectronApp } from 'update-electron-app'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit()
 }
+
+updateElectronApp()
 
 const icon = path.join(__dirname, '../resources/icon.png')
 const createWindow = () => {
