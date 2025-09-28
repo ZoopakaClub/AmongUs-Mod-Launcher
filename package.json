@@ -1,6 +1,6 @@
 {
   "name": "amongus_mod_launcher",
-  "version": "1.0.9a",
+  "version": "1.0.91",
   "productName": "amongus_mod_launcher",
   "description": "Unofficial mod switching tool for AmongUs",
   "main": ".vite/build/main.js",
@@ -13,7 +13,7 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "tag": "git tag v$npm_package_version && git push origin v$npm_package_version",
+    "tag": "cross-env-shell \"git tag v$npm_package_version && git push origin v$npm_package_version\"",
     "publish": "npm run tag && electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
@@ -56,6 +56,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "adm-zip": "^0.5.16",
     "axios": "^1.12.2",
+    "cross-env": "^10.0.0",
     "electron-squirrel-startup": "^1.0.1",
     "rage-edit": "^1.2.0",
     "react": "^19.1.1",
