@@ -18,24 +18,6 @@
     "vanilla": false
   },
   {
-    "title": "Town Of Host",
-    "prefix": "toh",
-    "image": "",
-    "platform": {
-      "steam": {
-        "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
-        "regex": "^TownOfHost-.*_Steam\\.zip$"
-      },
-      "epic": {
-        "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
-        "regex": "^TownOfHost-.*_Epic\\.zip$"
-      }
-    },
-    "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
-    "regex": "^TownOfHost-.*\\.zip$",
-    "vanilla": false
-  },
-  {
     "title": "Town Of Host K",
     "prefix": "tohk",
     "image": "",
