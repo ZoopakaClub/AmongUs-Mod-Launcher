@@ -6,7 +6,7 @@ import { ModSchema } from 'src/common/ModSchema'
 const ImageButton = styled(ButtonBase)(() => ({
   position: 'relative',
   display: 'flex',
-  height: 150,
+  height: 140,
   width: '30%',
   justifyContent: 'center',
   alignItems: 'center',

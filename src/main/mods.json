@@ -18,6 +18,24 @@
     "vanilla": false
   },
   {
+    "title": "Town Of Host",
+    "prefix": "toh",
+    "image": "",
+    "platform": {
+      "steam": {
+        "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
+        "regex": "^TownOfHost-.*_Steam\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
+        "regex": "^TownOfHost-.*_Epic\\.zip$"
+      }
+    },
+    "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
+    "regex": "^TownOfHost-.*\\.zip$",
+    "vanilla": false
+  },
+  {
     "title": "Town Of Host K",
     "prefix": "tohk",
     "image": "",
@@ -69,6 +87,42 @@
     },
     "release": "https://api.github.com/repos/Dolly1016/Nebula/releases",
     "regex": "^Nebula\\.zip$",
+    "vanilla": false
+  },
+  {
+    "title": "Town of Us\n Mira",
+    "prefix": "toum",
+    "image": "",
+    "platform": {
+      "steam": {
+        "release": "https://api.github.com/repos/AU-Avengers/TOU-Mira/releases",
+        "regex": "^TouMira-.*-steam-itch\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/AU-Avengers/TOU-Mira/releases",
+        "regex": "^TouMira-.*-epic-msstore\\.zip$"
+      }
+    },
+    "release": "https://api.github.com/repos/AU-Avengers/TOU-Mira/releases",
+    "regex": "^TouMira-.*-steam-itch\\.zip$",
+    "vanilla": false
+  },
+  {
+    "title": "AllTheRoles",
+    "prefix": "atr",
+    "image": "",
+    "platform": {
+      "steam": {
+        "release": "https://api.github.com/repos/Zeo666/AllTheRoles/releases",
+        "regex": "^AllTheRoles-.*-steam-itch\\.zip$"
+      },
+      "epic": {
+        "release": "https://api.github.com/repos/Zeo666/AllTheRoles/releases",
+        "regex": "^AllTheRoles-.*-epic-msstore\\.zip$"
+      }
+    },
+    "release": "https://api.github.com/repos/Zeo666/AllTheRoles/releases",
+    "regex": "^AllTheRoles-.*-steam-itch\\.zip$",
     "vanilla": false
   }
 ]

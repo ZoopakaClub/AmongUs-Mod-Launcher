@@ -14,8 +14,11 @@
 
 - [Super New Roles](https://github.com/SuperNewRoles/SuperNewRoles)
 - [Town Of Host](https://github.com/tukasa0001/TownOfHost)
+- [Town Of Host K](https://github.com/tukasa0001/TownOfHost)
 - [ExtremeRoles](https://github.com/yukieiji/ExtremeRoles)
 - [Nebula on the Ship](https://github.com/Dolly1016/Nebula)
+- [Town Of Us Mira](https://github.com/AU-Avengers/TOU-Mira)
+- [AllTheRoles](https://github.com/Zeo666/AllTheRoles)
 
 
 ## その他
