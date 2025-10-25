@@ -11,6 +11,7 @@ export interface ModSchema {
   title: string
   prefix: string
   image: string
+  url?: string
   platform?: ReleasePlatform
   release: string
   regex: string

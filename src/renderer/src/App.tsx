@@ -52,6 +52,9 @@ function App(): React.JSX.Element {
   const [currentPlatform, setCurrentPlatform] = useState<GamePlatform>(GamePlatform.CUSTOM)
   const [currentPlatformPath, setCurrentPlatformPath] = useState<string>('')
   const [currentPlatformPathDisable, setCurrentPlatformPathDisable] = useState<boolean>(false)
+  const [currentModPrefix, setCurrentModPrefix] = useState<string>('')
+
+  const [stateRunningGame, setStateRunningGame] = useState<boolean>(false)
 
   const [platformSelect, setPlatformSelect] = useState<React.JSX.Element[]>([])
 
@@ -148,6 +151,15 @@ function App(): React.JSX.Element {
 
   const resetMods = (location: string): Promise<boolean> => window.electron.ipcRenderer.invoke(Messages.RESET_MODS, location)
 
+  const getCurrentModPrefix = (location: string): Promise<string> =>
+    window.electron.ipcRenderer.invoke(Messages.GET_CURRENT_MOD_PREFIX, location)
+
+  useEffect(() => {
+    getCurrentModPrefix(currentPlatformPath).then((prefix) => {
+      setCurrentModPrefix(prefix)
+    })
+  }, [currentPlatformPath])
+
   useEffect(() => {
     if (!isModList) {
       const loadModList = (): Promise<ModSchema[]> =>
@@ -209,6 +221,11 @@ function App(): React.JSX.Element {
           setUpdateModalBar(false)
         }
       })
+
+      setInterval(async() => {
+        const res = await isRunningGame()
+        setStateRunningGame(res)
+      }, 5000);
     }
 
     once = false
@@ -311,6 +328,8 @@ function App(): React.JSX.Element {
       }
       launchWithMod(targetMod, currentPlatform)
     }
+    const prefix = await getCurrentModPrefix(currentPlatformPath)
+    setCurrentModPrefix(prefix)
   }
 
   const resetModsHandler = async (): Promise<void> => {
@@ -327,6 +346,9 @@ function App(): React.JSX.Element {
     setProgressModalMessage('削除中...')
     setOpenProgressModal(true)
     await resetMods(currentPlatformPath)
+    const prefix = await getCurrentModPrefix(currentPlatformPath)
+    setCurrentModPrefix(prefix)
+    
     setTimeout(() => {
       setOpenProgressModal(false)
     }, 5000)
@@ -511,6 +533,16 @@ function App(): React.JSX.Element {
     )
   }
 
+  const LauncherArea = styled('section')({
+    padding: '1rem',
+    '&::-webkit-scrollbar': {
+      width: '8px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      borderRadius: '5px',
+    },
+  })
+
   return (
     <>
       <div id="container">
@@ -519,6 +551,7 @@ function App(): React.JSX.Element {
             <Button onClick={resetModsHandler}>Mod削除</Button>
           </div>
           <div className="title">AmongUs Mod Launcher v{amlVersion}</div>
+          <div id="is_running" className={stateRunningGame ? 'true' : ''}>●</div>
           <div className="buttons">
             <IconButton
               aria-label="minimize"
@@ -536,9 +569,9 @@ function App(): React.JSX.Element {
             </IconButton>
           </div>
         </section>
-        <section id="launcher" style={{ padding: `1rem` }}>
-          <LaunchList mods={modListData} handler={launchHandler} />
-        </section>
+        <LauncherArea id="launcher">
+          <LaunchList mods={modListData} handler={launchHandler} current={currentModPrefix ? currentModPrefix : 'vanilla'} />
+        </LauncherArea>
         <section id="footer">
           <FormControl sx={{ minWidth: 120 }}>
             <Select

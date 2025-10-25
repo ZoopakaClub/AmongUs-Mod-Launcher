@@ -6,7 +6,7 @@ import mods from './mods.json'
 export const modListHandler = (): void => {
   ipcMain.handle(Messages.LOAD_MOD_LIST, (): ModSchema[] => {
     const vanilla: ModSchema = {
-      title: 'Vanilla\n-Modなし-',
+      title: '\nModなし',
       prefix: 'vanilla',
       image: '',
       release: '',

@@ -1,8 +1,9 @@
 [
   {
-    "title": "Super\nNewRoles",
+    "title": "SuperNewRoles",
     "prefix": "snr",
     "image": "",
+    "url": "https://github.com/SuperNewRoles/SuperNewRoles",
     "platform": {
       "steam": {
         "release": "https://api.github.com/repos/SuperNewRoles/SuperNewRoles/releases",
@@ -21,6 +22,7 @@
     "title": "Town Of Host",
     "prefix": "toh",
     "image": "",
+    "url": "https://github.com/tukasa0001/TownOfHost",
     "platform": {
       "steam": {
         "release": "https://api.github.com/repos/tukasa0001/TownOfHost/releases",
@@ -39,6 +41,7 @@
     "title": "Town Of Host K",
     "prefix": "tohk",
     "image": "",
+    "url": "https://github.com/tukasa0001/TownOfHost",
     "platform": {
       "steam": {
         "release": "https://api.github.com/repos/KYMario/TownOfHost-K/releases",
@@ -57,6 +60,7 @@
     "title": "ExtremeRoles",
     "prefix": "exr",
     "image": "",
+    "url": "https://github.com/yukieiji/ExtremeRoles",
     "platform": {
       "steam": {
         "release": "https://api.github.com/repos/yukieiji/ExtremeRoles/releases",
@@ -72,9 +76,10 @@
     "vanilla": false
   },
   {
-    "title": "Nebula \non the Ship",
+    "title": "Nebula on the Ship",
     "prefix": "nos",
     "image": "",
+    "url": "https://github.com/Dolly1016/Nebula",
     "platform": {
       "steam": {
         "release": "https://api.github.com/repos/Dolly1016/Nebula/releases",
@@ -90,9 +95,10 @@
     "vanilla": false
   },
   {
-    "title": "Town of Us\n Mira",
+    "title": "Town of Us Mira",
     "prefix": "toum",
     "image": "",
+    "url": "https://github.com/AU-Avengers/TOU-Mira",
     "platform": {
       "steam": {
         "release": "https://api.github.com/repos/AU-Avengers/TOU-Mira/releases",
@@ -111,6 +117,7 @@
     "title": "AllTheRoles",
     "prefix": "atr",
     "image": "",
+    "url": "https://github.com/Zeo666/AllTheRoles",
     "platform": {
       "steam": {
         "release": "https://api.github.com/repos/Zeo666/AllTheRoles/releases",

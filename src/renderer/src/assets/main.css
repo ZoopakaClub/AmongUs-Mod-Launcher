@@ -1,9 +1,13 @@
 html, body, div#root {
   width: 100%;
   height: 100%;
-  background-color: #2c2c2c;
-  color: #FAFAFA;
 }
+
+body {
+  color: #fafafa;
+  background: #1b1b1f !important;
+}
+
 
 div#container {
   position: relative;
@@ -38,6 +42,14 @@ section#menu .title {
 
 }
 
+section#menu #is_running {
+  color: #b2102f;
+  font-size: 1.4em;
+}
+section#menu #is_running.true {
+  color: #357a38;
+}
+
 section#menu .buttons {
   -webkit-user-select: none;
   -webkit-app-region: no-drag;
@@ -50,6 +62,10 @@ section#launcher {
   overflow-x: hidden;
   flex-grow: 1;
   flex-shrink: 1;
+}
+
+#launchList > .current {
+  border: solid 1px #90caf9;
 }
 
 #platform-select-mod {

@@ -62,6 +62,23 @@ const isCurrentModSame = async (dir: string, prefex: string): Promise<boolean> =
   }
 }
 
+const getCurrentModPrefix = async (dir: string): Promise<string> => {
+  try {
+    const workdir = dir
+    const currentModFile = path.join(workdir, 'aml.json')
+
+    const existcurrentModFile: boolean = fs.existsSync(currentModFile)
+    if (!existcurrentModFile) return ""
+
+    const json = fs.readFileSync(currentModFile, 'utf8')
+    const data = JSON.parse(json)
+    return data.current
+  } catch (e) {
+    console.error(e)
+    return ""
+  }
+}
+
 const deleteModData = async (dir: string): Promise<boolean> => {
   try {
     const filesInDir = fs.readdirSync(dir)
@@ -320,5 +337,9 @@ export const fileHandler = (): void => {
     await deleteModData(dir)
     await deleteHandlerData(dir)
     return true
+  })
+
+  ipcMain.handle(Messages.GET_CURRENT_MOD_PREFIX, async (_, dir: string): Promise<string> => {
+    return getCurrentModPrefix(dir)
   })
 }
